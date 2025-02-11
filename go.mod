@@ -3,6 +3,7 @@ module github.com/luizalexandresilva/goexpert-labs-otel
 go 1.23.5
 
 require (
+	github.com/go-chi/chi/v5 v5.2.1
 	go.opentelemetry.io/otel v1.34.0
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.34.0
 	go.opentelemetry.io/otel/sdk v1.34.0
