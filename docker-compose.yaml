@@ -1,0 +1,39 @@
+version: '3'
+services:
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: zipkin
+    ports:
+      - "9411:9411"
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:latest
+    restart: always
+    command: [ "--config=/etc/otel-config.yaml" ]
+    volumes:
+      - ./config/otel-collector-config.yaml:/etc/otel-collector-config.yaml
+    ports:
+      - "4317:4317"
+
+  service_a:
+    container_name: service_a
+    build:
+      context: ./service_a
+    environment:
+      - EXTERNAL_CALL_URL=http://service_b:8181
+      - EXTERNAL_CALL_METHOD=GET
+      - HTTP_PORT=8080
+    ports:
+      - "8080:8080"
+    depends_on:
+      - zipkin
+  service_b:
+    container_name: service_b
+    build:
+      context: ./service_b
+    environment:
+      - HTTP_PORT=8181
+    ports:
+      - "8181:8181"
+    depends_on:
+      - zipkin
